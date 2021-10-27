@@ -42,8 +42,8 @@ More information about Black, you find at
 The following software is required to run PTF:
 
  * Python 2.7 or 3.x
- * Scapy 2.4.5
  * six 1.16.0
+ * Scapy 2.4.5 (optional, if you provide custom packet manipulation module)
  * pypcap (optional - VLAN tests will fail without this)
  * tcpdump (optional - Scapy will complain if it's missing)
 
@@ -52,6 +52,11 @@ Root/sudo privilege is required on the host, in order to run `ptf`.
 To install minimal requirements execute:
 ```text
 pip install -r requirements.txt
+```
+
+The default packet manipulator tool for `ptf` is `Scapy`. To install it use:
+```text
+pip install scapy==2.4.5
 ```
 
 To enable VLAN tests, you need to install `pypcap`:
@@ -186,6 +191,18 @@ is done executing, an exception will be raised and the test counts as an
 error. A timeout can also be specified for each individual test case, using the
 `@testtimeout` decorator, which needs to be imported from `ptf.testutils`. This
 timeout takes precedence over the global timeout passed on the command line.
+
+## Pluggable packet manipulation module
+
+By default, `ptf` uses `Scapy` as a packet manipulation module, but now it 
+can operate on other, custom one. To use other packet manipulation module, 
+one needs to provide it as an argument `-pmm` or 
+`--packet-manipulation-module` when running `ptf` binary.
+
+In order to make it work, such module must implement methods, as defined in 
+Scapy version of `packet` file: `/src/ptf/packet_scapy.py`.
+
+Please make sure that this custom module is already loaded into the runtime.
 
 ---
 
