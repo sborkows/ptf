@@ -194,15 +194,24 @@ timeout takes precedence over the global timeout passed on the command line.
 
 ## Pluggable packet manipulation module
 
-By default, `ptf` uses `Scapy` as a packet manipulation module, but now it 
-can operate on other, custom one. To use other packet manipulation module, 
-one needs to provide it as an argument `-pmm` or 
-`--packet-manipulation-module` when running `ptf` binary.
+By default, `ptf` uses `Scapy` as a packet manipulation module (its 
+implementation is in file `/src/ptf/packet_scapy.py`), but it can also operate 
+on a different one. 
 
-In order to make it work, such module must implement methods, as defined in 
-Scapy version of `packet` file: `/src/ptf/packet_scapy.py`.
+In order to make it work, such module **must define/implement the same 
+symbols**, as defined in `Scapy` implementation of packet. Most of them are just 
+names of most common frame headers (Ether, IP, TCP, UDP, ...).
 
-Please make sure that this custom module is already loaded into the runtime.
+To use other packet manipulation module, one needs to 
+provide it as an argument `-pmm` or `--packet-manipulation-module` when running 
+`ptf` binary.
+
+```text
+sudo ./ptf <other parameters> -pmm foo.packet_foo 
+```
+
+Please make sure that this module is loaded into the runtime before running 
+any tests.
 
 ---
 
