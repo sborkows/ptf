@@ -135,7 +135,9 @@ def simple_tcp_packet_ext_taglist(
     if with_tcp_chksum:
         tcp_hdr = packet.TCP(sport=tcp_sport, dport=tcp_dport, flags=tcp_flags)
     else:
-        tcp_hdr = packet.TCP(sport=tcp_sport, dport=tcp_dport, flags=tcp_flags, chksum=0)
+        tcp_hdr = packet.TCP(
+            sport=tcp_sport, dport=tcp_dport, flags=tcp_flags, chksum=0
+        )
 
     ip_tos = ip_make_tos(ip_tos, ip_ecn, ip_dscp)
 
@@ -2367,7 +2369,9 @@ def simple_ip_only_packet(
     if with_tcp_chksum:
         tcp_hdr = packet.TCP(sport=tcp_sport, dport=tcp_dport, flags=tcp_flags)
     else:
-        tcp_hdr = packet.TCP(sport=tcp_sport, dport=tcp_dport, flags=tcp_flags, chksum=0)
+        tcp_hdr = packet.TCP(
+            sport=tcp_sport, dport=tcp_dport, flags=tcp_flags, chksum=0
+        )
 
     ip_tos = ip_make_tos(ip_tos, ip_ecn, ip_dscp)
 
