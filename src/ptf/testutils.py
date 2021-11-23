@@ -1609,7 +1609,7 @@ def ipv4_erspan_platform_pkt(
             session_id=mirror_id, sgt_other=sgt_other
         )
         if sgt_other & 0x01 == 1:
-            erspan_hdr = erspan_hdr / ERSPAN_PlatformSpecific(
+            erspan_hdr = erspan_hdr / packet.PlatformSpecific(
                 platf_id=platf_id, info1=info1, info2=info2
             )
     else:
