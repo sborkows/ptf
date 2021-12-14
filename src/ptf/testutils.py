@@ -1605,8 +1605,15 @@ def ipv4_erspan_platform_pkt(
         pktlen = MINSIZE
 
     if version == 2:
+        sgt = (sgt_other & 0xFFFF0000) >> 16
+        p = (sgt_other & 0x00008000) >> 15
+        ft = (sgt_other & 0x00007C00) >> 10
+        hw = (sgt_other & 0x000003F0) >> 4
+        d = (sgt_other & 0x00000008) >> 3
+        gra = (sgt_other & 0x00000006) >> 1
+        o = sgt_other & 0x00000001
         erspan_hdr = packet.GRE(proto=0x22EB) / packet.ERSPAN_III(
-            session_id=mirror_id, sgt_other=sgt_other
+            session_id=mirror_id, sgt_other=sgt, p=p, ft=ft, hw=hw, d=d, gra=gra, o=o
         )
         if sgt_other & 0x01 == 1:
             erspan_hdr = erspan_hdr / packet.PlatformSpecific(
