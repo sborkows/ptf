@@ -1491,8 +1491,14 @@ def ipv4_erspan_pkt(
 
     if version == 2:
         erspan_hdr = packet.GRE(proto=0x22EB) / packet.ERSPAN_III(
-            session_id=mirror_id, sgt_other=sgt_other, p=erspan_p, ft=erspan_ft,
-            hw=erspan_hw, d=erspan_d, gra=erspan_gra, o=erspan_o
+            session_id=mirror_id,
+            sgt_other=sgt_other,
+            p=erspan_p,
+            ft=erspan_ft,
+            hw=erspan_hw,
+            d=erspan_d,
+            gra=erspan_gra,
+            o=erspan_o,
         )
     else:
         erspan_hdr = packet.GRE(proto=0x88BE) / packet.ERSPAN(session_id=mirror_id)
@@ -1575,7 +1581,7 @@ def ipv4_erspan_platform_pkt(
     ip_options=False,
     version=2,
     mirror_id=0x3FF,
-    sgt_other=0,
+    sgt_other=1,
     erspan_p=0,
     erspan_ft=0,
     erspan_hw=0,
@@ -1637,8 +1643,14 @@ def ipv4_erspan_platform_pkt(
 
     if version == 2:
         erspan_hdr = packet.GRE(proto=0x22EB) / packet.ERSPAN_III(
-            session_id=mirror_id, sgt_other=sgt_other, p=erspan_p, ft=erspan_ft,
-            hw=erspan_hw, d=erspan_d, gra=erspan_gra, o=erspan_o
+            session_id=mirror_id,
+            sgt_other=sgt_other,
+            p=erspan_p,
+            ft=erspan_ft,
+            hw=erspan_hw,
+            d=erspan_d,
+            gra=erspan_gra,
+            o=erspan_o,
         )
         if sgt_other & 0x01 == 1:
             erspan_hdr = erspan_hdr / packet.PlatformSpecific(
