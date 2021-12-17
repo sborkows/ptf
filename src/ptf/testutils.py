@@ -1420,20 +1420,6 @@ def simple_gre_erspan_packet(
     return pkt
 
 
-def _erspan_III_packet(mirror_id, sgt_other):
-    # extract sgt and the following flags from sgt_other
-    sgt = (sgt_other & 0xFFFF0000) >> 16
-    p = (sgt_other & 0x8000) >> 15
-    ft = (sgt_other & 0x7C00) >> 10
-    hw = (sgt_other & 0x3F0) >> 4
-    d = (sgt_other & 0x8) >> 3
-    gra = (sgt_other & 0x6) >> 1
-    o = sgt_other & 0x1
-
-    return packet.ERSPAN_III(session_id=mirror_id, sgt_other=sgt, p=p, ft=ft, hw=hw,
-                             d=d, gra=gra, o=o)
-
-
 def ipv4_erspan_pkt(
     pktlen=350,
     eth_dst="00:01:02:03:04:05",
@@ -1455,6 +1441,12 @@ def ipv4_erspan_pkt(
     version=2,
     mirror_id=0x3FF,
     sgt_other=0,
+    erspan_p=0,
+    erspan_ft=0,
+    erspan_hw=0,
+    erspan_d=0,
+    erspan_gra=0,
+    erspan_o=0,
     inner_frame=None,
 ):
     """
@@ -1479,8 +1471,13 @@ def ipv4_erspan_pkt(
     @param ip_options list of IP options (False if don't want to)
     @param version ERSPAN version
     @param mirror_id (mirror_session_id)
-    @param sgt_other for ERSPAN_III it is combined field of sgt (named sgt_other), p,
-    ft, hw, d, gra and o
+    @param sgt_other for ERSPAN_III it is sgt field
+    @param erspan_p ERSPAN_III p field
+    @param erspan_ft ERSPAN_III ft field
+    @param erspan_hw ERSPAN_III hw field
+    @param erspan_d ERSPAN_III d field
+    @param erspan_gra ERSPAN_III gra field
+    @param erspan_o ERSPAN_III o field
     @param inner_frame payload of the GRE packet
     """
     if packet.GRE is None or packet.ERSPAN is None or packet.ERSPAN_III is None:
@@ -1493,7 +1490,10 @@ def ipv4_erspan_pkt(
         pktlen = MINSIZE
 
     if version == 2:
-        erspan_hdr = packet.GRE(proto=0x22EB) / _erspan_III_packet(mirror_id, sgt_other)
+        erspan_hdr = packet.GRE(proto=0x22EB) / packet.ERSPAN_III(
+            session_id=mirror_id, sgt_other=sgt_other, p=erspan_p, ft=erspan_ft,
+            hw=erspan_hw, d=erspan_d, gra=erspan_gra, o=erspan_o
+        )
     else:
         erspan_hdr = packet.GRE(proto=0x88BE) / packet.ERSPAN(session_id=mirror_id)
 
@@ -1575,7 +1575,13 @@ def ipv4_erspan_platform_pkt(
     ip_options=False,
     version=2,
     mirror_id=0x3FF,
-    sgt_other=1,
+    sgt_other=0,
+    erspan_p=0,
+    erspan_ft=0,
+    erspan_hw=0,
+    erspan_d=0,
+    erspan_gra=0,
+    erspan_o=1,
     platf_id=0,
     info1=0,
     info2=0,
@@ -1603,8 +1609,13 @@ def ipv4_erspan_platform_pkt(
     @param ip_options list of IP options (False if don't want to)
     @param version ERSPAN version
     @param mirror_id (mirror_session_id)
-    @param sgt_other for ERSPAN_III it is combined field of sgt (named sgt_other), p,
-    ft, hw, d, gra and o
+    @param sgt_other for ERSPAN_III it is sgt field
+    @param erspan_p ERSPAN_III p field
+    @param erspan_ft ERSPAN_III ft field
+    @param erspan_hw ERSPAN_III hw field
+    @param erspan_d ERSPAN_III d field
+    @param erspan_gra ERSPAN_III gra field
+    @param erspan_o ERSPAN_III o field
     @param platf_id Specific Platform Subheader Platf Id
     @param info1 Specific Platform Subheader 26 bit field
     @param info2 Specific Platform Subheader 32 bit field
@@ -1625,7 +1636,10 @@ def ipv4_erspan_platform_pkt(
         pktlen = MINSIZE
 
     if version == 2:
-        erspan_hdr = packet.GRE(proto=0x22EB) / _erspan_III_packet(mirror_id, sgt_other)
+        erspan_hdr = packet.GRE(proto=0x22EB) / packet.ERSPAN_III(
+            session_id=mirror_id, sgt_other=sgt_other, p=erspan_p, ft=erspan_ft,
+            hw=erspan_hw, d=erspan_d, gra=erspan_gra, o=erspan_o
+        )
         if sgt_other & 0x01 == 1:
             erspan_hdr = erspan_hdr / packet.PlatformSpecific(
                 platf_id=platf_id, info1=info1, info2=info2
